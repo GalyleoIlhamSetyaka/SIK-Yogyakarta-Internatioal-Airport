@@ -18,7 +18,7 @@
       <a class="nav-link text-dark" href="{{ url('/home') }}">Home</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link text-dark" href="/dashboard">{{ __('Dashboard') }}</a>
+      <a class="nav-link text-dark" href="/grid-map">{{ __('Grid Map') }}</a>
     </li>
 
     <li class="nav-item">

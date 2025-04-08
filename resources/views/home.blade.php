@@ -23,6 +23,10 @@
     <li class="nav-item">
       <a class="nav-link text-dark" href="/home/profile">{{ __('Profile') }}</a>
     </li>
+    
+    <li class="nav-item">
+      <a class="nav-link text-dark" href="/grid-map">{{ __('Grid Map') }}</a>
+    </li>
 
     <li class="nav-item">
       <a class="nav-link text-dark" href="{{ route('logout') }}"
