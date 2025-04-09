@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GridMapController;
+use App\Http\Livewire\GridMapComponent;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -43,9 +45,6 @@ Route::resource('/home/admin', App\Http\Controllers\Auth\AdminController::class)
 
 Route::resource('/password/reset', App\Http\Controllers\Auth\ResetController::class);
 
-Route::get('/grid-map', [GridMapController::class, 'index'])->name('grid-map.index');
-Route::post('/grid-map/update', [GridMapController::class, 'updateGrid'])->name('grid.update');
-Route::get('/grid-map/{grid_id}', [GridMapController::class, 'getGridData'])->name('grid.data');
+Route::get('/grid-map', GridMapComponent::class);
 Route::post('/grid-map/update', [GridMapController::class, 'update'])->name('grid-map.update');
-
 ?>

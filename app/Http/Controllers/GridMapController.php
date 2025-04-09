@@ -10,30 +10,32 @@ class GridMapController extends Controller
 {
     public function index()
     {
-        // Ambil semua data grid dari database dan ubah menjadi keyed array
         $grids = GridMap::all()->keyBy('grid_id');
         $vehicles = Vehicle::all();
     
-        return view('grid-map', compact('grids', 'vehicles'));
+        return view('grid-map', [
+            'grids' => $grids,
+            'vehicles' => $vehicles,
+            'selectedGrid' => null // Tambahkan ini untuk mencegah undefined variable
+        ]);
     }
 
     public function update(Request $request)
     {
         $request->validate([
             'grid_id' => 'required|string',
-            'color' => 'nullable|string',
+            'color' => 'required|string',
             'message' => 'nullable|string',
         ]);
 
-        // Simpan atau update data grid
         GridMap::updateOrCreate(
             ['grid_id' => $request->grid_id],
             [
-                'color' => $request->color ?? 'transparent',
-                'message' => $request->message ?? '',
+                'color' => $request->color,
+                'message' => $request->message,
             ]
         );
 
-        return redirect()->back()->with('success', 'Grid berhasil diperbarui.');
+        return redirect()->back()->with('success', 'Grid updated.');
     }
 }
