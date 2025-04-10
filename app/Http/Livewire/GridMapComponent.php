@@ -44,7 +44,7 @@ class GridMapComponent extends Component
     public function render()
     {
         return view('livewire.grid-map-component')
-        ->layout('layouts.app');
+        ->layout('component.layouts.app');
 
     }
 }

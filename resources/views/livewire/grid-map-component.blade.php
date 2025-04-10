@@ -39,7 +39,10 @@
 @endsection
 <div class="relative w-full">
     {{-- Gambar Grid Map --}}
-    <img src="{{ asset('public/img/kendaraan/gripmap.png') }}" alt="Grid Map" class="w-full h-auto">
+    <img src="/img/index/gripmap.png"
+     wire:click="handleImageClick($event)"
+     class="mx-auto cursor-crosshair max-w-full h-auto"
+     alt="Grid Map">
 
     {{-- Overlay grid --}}
     @foreach ($grids as $gridId => $grid)
@@ -86,3 +89,4 @@
         </div>
     @endif
 </div>
+
