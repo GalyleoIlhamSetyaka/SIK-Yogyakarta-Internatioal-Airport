@@ -37,56 +37,70 @@
 </li>
 @endguest
 @endsection
-<div class="relative w-full">
-    {{-- Gambar Grid Map --}}
-    <img src="/img/index/gripmap.png"
-     wire:click="handleImageClick($event)"
-     class="mx-auto cursor-crosshair max-w-full h-auto"
-     alt="Grid Map">
+<div class="relative w-full overflow-x-auto">
+    {{-- Kontainer fixed ukuran sesuai gridmap.png --}}
+    <div class="relative" style="width: 4689px; height: 1993px;">
+        {{-- Gambar sebagai background --}}
+        <img src="{{ asset('img/index/gripmap.png') }}" 
+             class="absolute top-0 left-0 w-full h-full z-0" 
+             alt="Grid Map" />
 
-    {{-- Overlay grid --}}
-    @foreach ($grids as $gridId => $grid)
-        <div
-            class="absolute cursor-pointer border"
-            style="
-                top: {{ $grid['top'] }}px;
-                left: {{ $grid['left'] }}px;
-                width: {{ $grid['width'] }}px;
-                height: {{ $grid['height'] }}px;
-                background-color: {{ $grid['color'] ?? 'transparent' }};
-            "
-            wire:click="selectGrid('{{ $gridId }}')"
-            title="{{ $grid['message'] ?? 'Kosong' }}"
-        >
-        </div>
-    @endforeach
+        {{-- Overlay Grid --}}
+        @foreach ($rows as $i => $row)
+            @foreach ($cols as $j => $col)
+                @php
+                    $gridId = $row . $col;
+                    $cellWidth = 4689 / 29;
+                    $cellHeight = 1993 / 14;
+                    $left = ($j - 1) * $cellWidth;
+                    $top = $i * $cellHeight;
+                    $bg = $grids[$gridId]['color'] ?? 'transparent';
+                @endphp
+                <div 
+                    wire:click="selectGrid('{{ $gridId }}')"
+                    title="{{ $gridId }}"
+                    class="absolute border border-yellow-500 text-xs text-center cursor-pointer z-10"
+                    style="
+                        top: {{ $top }}px;
+                        left: {{ $left }}px;
+                        width: {{ $cellWidth }}px;
+                        height: {{ $cellHeight }}px;
+                        background-color: {{ $selectedGridId === $gridId ? '#f87171' : $bg }};
+                    ">
+                </div>
+            @endforeach
+        @endforeach
+    </div>
 
-    {{-- Form untuk edit grid --}}
-    @if ($modalVisible && $selectedGrid)
-        <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
-                <h2 class="text-lg font-semibold mb-4">Edit Grid: {{ $selectedGrid }}</h2>
+    {{-- Modal Input --}}
+    @if ($selectedGridId)
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white p-6 rounded-lg w-full max-w-md">
+                <h2 class="text-xl font-bold mb-4">Atur Grid {{ $selectedGridId }}</h2>
 
-                <div class="mb-4">
-                    <label for="color" class="block text-sm font-medium">Warna</label>
-                    <input type="color" id="color" wire:model="color" class="mt-1 block w-full border rounded">
+                <div class="mb-2">
+                    <label>Kendaraan:</label>
+                    <select wire:model="selectedVehicle" class="w-full border p-1">
+                        <option value="">Pilih Kendaraan</option>
+                        @foreach ($vehicles as $vehicle)
+                            <option value="{{ $vehicle->id }}">{{ $vehicle->nama }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
-                <div class="mb-4">
-                    <label for="message" class="block text-sm font-medium">Pesan</label>
-                    <input type="text" id="message" wire:model="message" class="mt-1 block w-full border rounded">
+                <div class="mb-2">
+                    <label>Pesan:</label>
+                    <textarea wire:model="message" class="w-full border p-1" rows="3"></textarea>
                 </div>
 
-                <div class="flex justify-end space-x-2">
-                    <button wire:click="saveGrid" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                        Simpan
-                    </button>
-                    <button wire:click="$set('modalVisible', false)" class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">
-                        Batal
-                    </button>
+                <div class="flex justify-end gap-2">
+                    <button wire:click="cancel" class="px-3 py-1 bg-gray-400 text-white rounded">Batal</button>
+                    <button wire:click="saveGrid" class="px-3 py-1 bg-red-500 text-white rounded">Simpan</button>
                 </div>
             </div>
         </div>
     @endif
 </div>
+
+
 

@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GridMapController;
-use App\Http\Livewire\GridMapComponent;
+use App\Livewire\GridMapComponent;
 
 
 /*

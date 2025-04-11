@@ -8,43 +8,63 @@ use App\Models\Vehicle;
 
 class GridMapComponent extends Component
 {
+    public $rows, $cols;
     public $grids = [];
-    public $vehicles = [];
-    public $selectedGrid = null;
-    public $modalVisible = false;
-    public $color = '#ffffff';
-    public $message = '';
+    public $selectedGridId, $selectedVehicle, $message;
 
     public function mount()
     {
-        $this->grids = GridMap::all()->keyBy('grid_id')->toArray();
-        $this->vehicles = Vehicle::all();
+        $this->rows = range('A', 'N'); // 14 rows
+        $this->cols = range(1, 29);    // 29 columns
+
+        $this->grids = GridMap::all()
+            ->keyBy('grid_id')
+            ->map(fn ($grid) => [
+                'color' => $grid->color,
+                'message' => $grid->message,
+                'vehicle_id' => $grid->vehicle_id
+            ])->toArray();
     }
 
     public function selectGrid($gridId)
     {
-        $this->selectedGrid = $gridId;
-        $grid = GridMap::where('grid_id', $gridId)->first();
-        $this->color = $grid->color ?? '#ffffff';
-        $this->message = $grid->message ?? '';
-        $this->modalVisible = true;
+        $this->selectedGridId = $gridId;
+        $this->message = $this->grids[$gridId]['message'] ?? '';
+        $this->selectedVehicle = $this->grids[$gridId]['vehicle_id'] ?? null;
     }
 
     public function saveGrid()
     {
+        $color = '#ff0000';
+
         GridMap::updateOrCreate(
-            ['grid_id' => $this->selectedGrid],
-            ['color' => $this->color, 'message' => $this->message]
+            ['grid_id' => $this->selectedGridId],
+            [
+                'color' => $color,
+                'message' => $this->message,
+                'vehicle_id' => $this->selectedVehicle
+            ]
         );
 
-        $this->grids = GridMap::all()->keyBy('grid_id')->toArray();
-        $this->modalVisible = false;
+        $this->grids[$this->selectedGridId] = [
+            'color' => $color,
+            'message' => $this->message,
+            'vehicle_id' => $this->selectedVehicle
+        ];
+
+        $this->reset(['selectedGridId', 'selectedVehicle', 'message']);
+    }
+
+    public function cancel()
+    {
+        $this->reset(['selectedGridId', 'selectedVehicle', 'message']);
     }
 
     public function render()
     {
-        return view('livewire.grid-map-component')
+        return view('livewire.grid-map-component', [
+            'vehicles' => Vehicle::all(),
+        ])
         ->layout('component.layouts.app');
-
     }
 }
