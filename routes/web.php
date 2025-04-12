@@ -45,6 +45,7 @@ Route::resource('/home/admin', App\Http\Controllers\Auth\AdminController::class)
 
 Route::resource('/password/reset', App\Http\Controllers\Auth\ResetController::class);
 
-Route::get('/grid-map', GridMapComponent::class)->name('grid.map');
-Route::post('/grid-map/update', [GridMapController::class, 'update'])->name('grid-map.update');
+Route::get('/grid-map', function () {
+    return view('grid-map'); 
+});Route::post('/grid-map/update', [GridMapController::class, 'update'])->name('grid-map.update');
 ?>

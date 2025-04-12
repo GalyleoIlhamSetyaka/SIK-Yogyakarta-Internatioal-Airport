@@ -37,66 +37,33 @@
 </li>
 @endguest
 @endsection
-<div class="relative w-full overflow-x-auto">
-    {{-- Kontainer fixed ukuran sesuai gridmap.png --}}
-    <div class="relative" style="width: 4689px; height: 1993px;">
-        {{-- Gambar sebagai background --}}
-        <img src="{{ asset('img/index/gripmap.png') }}" 
-             class="absolute top-0 left-0 w-full h-full z-0" 
-             alt="Grid Map" />
+<div class="relative">
+    <img src="{{ asset('img/index/gripmap.png') }}" alt="Grid Map" class="w-full h-auto">
 
-        {{-- Overlay Grid --}}
-        @foreach ($rows as $i => $row)
-            @foreach ($cols as $j => $col)
-                @php
-                    $gridId = $row . $col;
-                    $cellWidth = 4689 / 29;
-                    $cellHeight = 1993 / 14;
-                    $left = ($j - 1) * $cellWidth;
-                    $top = $i * $cellHeight;
-                    $bg = $grids[$gridId]['color'] ?? 'transparent';
-                @endphp
-                <div 
-                    wire:click="selectGrid('{{ $gridId }}')"
-                    title="{{ $gridId }}"
-                    class="absolute border border-yellow-500 text-xs text-center cursor-pointer z-10"
-                    style="
-                        top: {{ $top }}px;
-                        left: {{ $left }}px;
-                        width: {{ $cellWidth }}px;
-                        height: {{ $cellHeight }}px;
-                        background-color: {{ $selectedGridId === $gridId ? '#f87171' : $bg }};
-                    ">
-                </div>
-            @endforeach
-        @endforeach
-    </div>
+    @foreach($gridCells as $cell)
+        <div
+            wire:click="selectCell({{ $cell->id }})"
+            class="absolute border"
+            style="
+                top: {{ $cell->y }}px;
+                left: {{ $cell->x }}px;
+                width: {{ $cell->width }}px;
+                height: {{ $cell->height }}px;
+                background-color: {{ $cell->color ?? 'transparent' }};
+            "
+        >
+            {{ $cell->name }}
+        </div>
+    @endforeach
 
-    {{-- Modal Input --}}
-    @if ($selectedGridId)
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="bg-white p-6 rounded-lg w-full max-w-md">
-                <h2 class="text-xl font-bold mb-4">Atur Grid {{ $selectedGridId }}</h2>
-
-                <div class="mb-2">
-                    <label>Kendaraan:</label>
-                    <select wire:model="selectedVehicle" class="w-full border p-1">
-                        <option value="">Pilih Kendaraan</option>
-                        @foreach ($vehicles as $vehicle)
-                            <option value="{{ $vehicle->id }}">{{ $vehicle->nama }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="mb-2">
-                    <label>Pesan:</label>
-                    <textarea wire:model="message" class="w-full border p-1" rows="3"></textarea>
-                </div>
-
-                <div class="flex justify-end gap-2">
-                    <button wire:click="cancel" class="px-3 py-1 bg-gray-400 text-white rounded">Batal</button>
-                    <button wire:click="saveGrid" class="px-3 py-1 bg-red-500 text-white rounded">Simpan</button>
-                </div>
+    @if($selectedCell)
+        <div class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white p-4 rounded">
+                <h2>Edit Grid Cell</h2>
+                <input type="text" wire:model="name" placeholder="Name" class="border p-1">
+                <input type="text" wire:model="color" placeholder="Color" class="border p-1">
+                <textarea wire:model="message" placeholder="Message" class="border p-1"></textarea>
+                <button wire:click="save" class="bg-blue-500 text-white px-4 py-2">Save</button>
             </div>
         </div>
     @endif

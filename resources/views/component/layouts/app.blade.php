@@ -22,6 +22,7 @@
     <script src="//unpkg.com/alpinejs" defer></script>
 </head>
 <body style="min-height:90vh;">
+@livewire('grid-map')
 @livewireScripts
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">

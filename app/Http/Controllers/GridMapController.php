@@ -1,41 +1,64 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Livewire;
 
-use Illuminate\Http\Request;
+use Livewire\Component;
 use App\Models\GridMap;
 use App\Models\Vehicle;
 
-class GridMapController extends Controller
+class GridMapComponent extends Component
 {
-    public function index()
+    public $rows, $cols;
+    public $grids = [];
+    public $selectedGridId, $selectedVehicle, $message;
+
+    public function mount()
     {
-        $grids = GridMap::all()->keyBy('grid_id');
-        $vehicles = Vehicle::all();
-    
-        return view('grid-map', [
-            'grids' => $grids,
-            'vehicles' => $vehicles,
-            'selectedGrid' => null // Tambahkan ini untuk mencegah undefined variable
-        ]);
+        $this->rows = range('A', 'N');
+        $this->cols = range(1, 29);
+
+        $this->grids = GridMap::all()->keyBy('grid_id')->map(function ($grid) {
+            return [
+                'color' => $grid->color,
+                'message' => $grid->message,
+                'vehicle_id' => $grid->vehicle_id,
+            ];
+        })->toArray();
     }
 
-    public function update(Request $request)
+    public function selectGrid($gridId)
     {
-        $request->validate([
-            'grid_id' => 'required|string',
-            'color' => 'required|string',
-            'message' => 'nullable|string',
-        ]);
+        $this->selectedGridId = $gridId;
+        $grid = GridMap::where('grid_id', $gridId)->first();
 
+        $this->selectedVehicle = $grid->vehicle_id ?? null;
+        $this->message = $grid->message ?? '';
+    }
+
+    public function saveGrid()
+    {
         GridMap::updateOrCreate(
-            ['grid_id' => $request->grid_id],
+            ['grid_id' => $this->selectedGridId],
             [
-                'color' => $request->color,
-                'message' => $request->message,
+                'vehicle_id' => $this->selectedVehicle,
+                'message' => $this->message,
+                'color' => '#f87171'
             ]
         );
 
-        return redirect()->back()->with('success', 'Grid updated.');
+        $this->reset(['selectedGridId', 'selectedVehicle', 'message']);
+        $this->mount(); // refresh data
+    }
+
+    public function cancel()
+    {
+        $this->reset(['selectedGridId', 'selectedVehicle', 'message']);
+    }
+
+    public function render()
+    {
+        return view('livewire.grid-map-component', [
+            'vehicles' => Vehicle::all()
+        ])->layout('component.layouts.app');
     }
 }
