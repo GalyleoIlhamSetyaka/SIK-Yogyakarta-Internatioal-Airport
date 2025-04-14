@@ -25,7 +25,7 @@
     </li>
     
     <li class="nav-item">
-      <a class="nav-link text-dark" href="/grid-map">{{ __('Grid Map') }}</a>
+      <a class="nav-link text-dark" href="/marker-map">{{ __('Grid Map') }}</a>
     </li>
 
     <li class="nav-item">

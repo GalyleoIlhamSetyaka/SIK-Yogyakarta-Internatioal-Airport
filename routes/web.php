@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GridMapController;
+use App\Livewire\MarkerMap;
 use App\Livewire\GridMapComponent;
+
 
 
 /*
@@ -45,7 +47,11 @@ Route::resource('/home/admin', App\Http\Controllers\Auth\AdminController::class)
 
 Route::resource('/password/reset', App\Http\Controllers\Auth\ResetController::class);
 
-Route::get('/grid-map', function () {
-    return view('grid-map'); 
-});Route::post('/grid-map/update', [GridMapController::class, 'update'])->name('grid-map.update');
+Route::get('/map', function () {
+    return view('marker-map');
+});
+
+Route::get('/vehicles', function () {
+    return view('vehicles.index');
+});
 ?>
