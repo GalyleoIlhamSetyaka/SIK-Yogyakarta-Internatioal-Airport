@@ -39,9 +39,9 @@
 </li>
 @endguest
 @endsection
-<div x-data="{ showModal: false, hoveredMarker: null, tempX: 0, tempY: 0 }" class="map-container">
+<div x-data="{ selectedCoords: null, hoveredMarker: null, showSidebarForm: false, selectedVehicle: null }" class="map-container">
     <!-- Main Map Area -->
-    <div class="relative bg-gray-100 p-4 rounded-lg shadow-lg">
+    <div class="relative bg-gray-100 p-4 rounded-lg shadow-lg flex-1">
         <div class="relative" wire:ignore>
             <img 
                 src="{{ asset('img/index/gripmap.png') }}" 
@@ -49,69 +49,35 @@
                 id="mapImage"
                 @click="
                     const rect = $event.target.getBoundingClientRect();
-                    tempX = $event.clientX - rect.left;
-                    tempY = $event.clientY - rect.top;
-                    showModal = true;
+                    selectedCoords = {
+                        x: $event.clientX - rect.left,
+                        y: $event.clientY - rect.top
+                    };
+                    showSidebarForm = true;
                 "
             >
             
-            <!-- Grid Overlay -->
-            <div class="image-grid"></div>
-            
-            <!-- Markers -->
+            <!-- Markers dengan Material Icons -->
             @foreach($markers as $marker)
                 <div 
-                    x-data="{
-                        x: {{ $marker->x }},
-                        y: {{ $marker->y }},
-                        dragging: false,
-                        init() {
-                            this.$watch('dragging', value => {
-                                if (!value) {
-                                    $wire.updateMarker({{ $marker->id }}, this.x, this.y);
-                                }
-                            });
-                        }
-                    }"
-                    class="absolute w-6 h-6 cursor-move transition-transform"
+                    class="absolute cursor-pointer transition-transform"
                     style="left: {{ $marker->x }}px; top: {{ $marker->y }}px;"
                     wire:key="marker-{{ $marker->id }}"
-                    @mousedown="dragging = true"
-                    @mouseup="dragging = false"
-                    @mousemove.away="
-                        if (dragging) {
-                            const rect = document.getElementById('mapImage').getBoundingClientRect();
-                            x = $event.clientX - rect.left - 12;
-                            y = $event.clientY - rect.top - 12;
-                        }
-                    "
-                    x-bind:style="`left: ${x}px; top: ${y}px`"
                     @mouseover="hoveredMarker = {{ $marker->id }}"
                     @mouseleave="hoveredMarker = null"
                 >
-                    <img 
-                        src="{{ asset('img/kendaraan/'.$marker->vehicle->image) }}" 
-                        class="w-full h-full rounded-full border-2 border-white shadow-lg"
-                        title="{{ $marker->vehicle->name }}"
-                    >
-                    
-                    <!-- Popup Info -->
-                    <div x-show="hoveredMarker === {{ $marker->id }}" 
-                         class="absolute bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 bg-white p-3 rounded-lg shadow-md border border-gray-200 min-w-[220px]">
-                        <div class="text-sm font-semibold text-gray-800">
-                            {{ $marker->vehicle->name }} ({{ $marker->vehicle->code }})
-                        </div>
-                        <div class="text-xs text-gray-600 mt-2">
-                            {{ $marker->message }}
-                        </div>
-                        <div class="mt-3 flex justify-end space-x-2">
-                            <button 
-                                class="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                                @click="$wire.deleteMarker({{ $marker->id }})"
-                            >
-                                Hapus
-                            </button>
-                        </div>
+                    <div class="text-red-600 material-icons-outlined text-4xl drop-shadow-lg">
+                        @php
+                            $icon = match($marker->vehicle->code) {
+                                'A1', 'A2', 'A3' => 'local_hospital',
+                                'F1', 'F2', 'F3' => 'fire_truck',
+                                'P' => 'local_police',
+                                'T' => 'directions_car',
+                                'NT' => 'local_shipping',
+                                default => 'place'
+                            };
+                        @endphp
+                        {{ $icon }}
                     </div>
                 </div>
             @endforeach
@@ -119,9 +85,36 @@
     </div>
 
     <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="mb-6">
-            <h3 class="text-xl font-bold mb-4 text-gray-700">Pilih Kendaraan</h3>
+    <div class="sidebar w-96">
+        <!-- Add Marker Form -->
+        <div x-show="showSidebarForm" class="bg-white p-4 rounded-lg border mb-6">
+            <h3 class="text-lg font-bold mb-4">Tambah Marker Baru</h3>
+            <form wire:submit.prevent="addMarker">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Koordinat</label>
+                    <input 
+                        type="text" 
+                        value="X: @{{ selectedCoords?.x.toFixed(0) }}, Y: @{{ selectedCoords?.y.toFixed(0) }}" 
+                        class="w-full p-2 border rounded bg-gray-50 cursor-not-allowed"
+                        disabled
+                    >
+                </div>
+    <!-- Input Hidden untuk Koordinat -->
+    <input type="hidden" wire:model="tempX">
+    <input type="hidden" wire:model="tempY">
+    
+    @error('selectedVehicle') 
+        <div class="alert alert-danger mb-2">{{ $message }}</div>
+    @enderror
+    
+    @error('message') 
+        <div class="alert alert-danger mb-2">{{ $message }}</div>
+    @enderror
+
+
+        <!-- Vehicle Selection -->
+        <div class="mb-4">
+            <h3 class="text-xl font-bold mb-2 text-gray-700">Pilih Kendaraan</h3>
             <select 
                 wire:model="selectedVehicle"
                 class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -135,66 +128,57 @@
             </select>
         </div>
 
-        <!-- Information Panel -->
-        <div class="border-t pt-4">
-            <h3 class="text-xl font-bold mb-4 text-gray-700">Informasi Marker</h3>
-            <template x-if="hoveredMarker">
-                <div class="space-y-3">
-                    <div class="p-3 bg-blue-50 rounded-lg">
-                        <p class="text-sm font-medium text-gray-700">
-                            Koordinat: 
-                            <span x-text="`X: ${$wire.markers.find(m => m.id === hoveredMarker).x}, Y: ${$wire.markers.find(m => m.id === hoveredMarker).y}`"></span>
-                        </p>
-                        <p class="text-sm text-gray-600 mt-1" x-text="'Pesan: ' + $wire.markers.find(m => m.id === hoveredMarker).message"></p>
-                    </div>
-                </div>
-            </template>
-        </div>
-
-    </div>
-
-    <!-- Add Marker Modal -->
-    <div x-show="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg p-6 w-full max-w-md" @click.away="showModal = false">
-            <h3 class="text-lg font-semibold mb-4">Tambah Marker Baru</h3>
-            <form wire:submit.prevent="addMarker(tempX, tempY)">
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Posisi</label>
-                    <input 
-                        type="text" 
-                        value="X: @{{ tempX }}, Y: @{{ tempY }}" 
-                        class="w-full p-2 border rounded cursor-not-allowed bg-gray-50"
-                        disabled
-                    >
-                </div>
-                
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Pesan</label>
+                    <label class="block text-sm font-medium mb-1">Pesan</label>
                     <textarea
                         wire:model="message"
-                        class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                        class="w-full p-2 border rounded"
                         rows="3"
                         placeholder="Masukkan pesan informasi..."
                     ></textarea>
                     @error('message') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 </div>
 
-                <div class="flex justify-end space-x-3">
+                <div class="flex justify-end gap-2">
                     <button 
                         type="button"
-                        class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
-                        @click="showModal = false"
+                        class="px-4 py-2 text-gray-700 bg-gray-100 rounded hover:bg-gray-200"
+                        @click="showSidebarForm = false"
                     >
                         Batal
                     </button>
                     <button 
                         type="submit"
-                        class="px-4 py-2 bg-blue-600 text-black rounded-lg hover:bg-blue-700"
+                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
                     >
                         Simpan Marker
                     </button>
                 </div>
             </form>
+        </div>
+
+        <!-- Marker Information -->
+        <div class="pt-4">
+            <h3 class="text-lg font-bold mb-4">Informasi Marker</h3>
+            <template x-if="hoveredMarker">
+                <div class="p-4 bg-gray-50 rounded-lg">
+                    @foreach($markers as $marker)
+                        <div x-show="hoveredMarker === {{ $marker->id }}">
+                            <p class="font-medium">
+                                {{ $marker->vehicle->code }} - {{ $marker->vehicle->name }}
+                            </p>
+                            <p class="text-sm mt-2">Koordinat: X:{{ $marker->x }}, Y:{{ $marker->y }}</p>
+                            <p class="text-sm">Pesan: {{ $marker->message }}</p>
+                            <button 
+                                class="mt-2 text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                                wire:click="deleteMarker({{ $marker->id }})"
+                            >
+                                Hapus Marker
+                            </button>
+                        </div>
+                    @endforeach
+                </div>
+            </template>
         </div>
     </div>
 </div>

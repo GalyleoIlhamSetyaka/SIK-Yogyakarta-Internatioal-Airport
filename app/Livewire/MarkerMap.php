@@ -2,9 +2,9 @@
 
 namespace App\Livewire;
 
+use Livewire\Component;
 use App\Models\Marker;
 use App\Models\Vehicle;
-use Livewire\Component;
 
 class MarkerMap extends Component
 {
@@ -12,13 +12,19 @@ class MarkerMap extends Component
     public $vehicles;
     public $selectedVehicle;
     public $message;
-    public $showModal = false;
-    public $tempX = 0;
-    public $tempY = 0;
-    
+    public $tempX;
+    public $tempY;
+
     protected $rules = [
         'selectedVehicle' => 'required|exists:vehicles,code',
         'message' => 'required|min:5|max:255',
+        'tempX' => 'required|numeric|between:0,1200', // Sesuaikan dengan ukuran gambar
+        'tempY' => 'required|numeric|between:0,800'
+    ];
+
+    protected $messages = [
+        'selectedVehicle.required' => 'Pilih kendaraan terlebih dahulu',
+        'message.required' => 'Pesan harus diisi',
     ];
 
     public function mount()
@@ -29,45 +35,54 @@ class MarkerMap extends Component
 
     public function loadMarkers()
     {
-        $this->markers = Marker::with('vehicle')->get()->toArray();
-    }
-
-    public function openModal($x, $y)
-    {
-        $this->tempX = $x;
-        $this->tempY = $y;
-        $this->showModal = true;
+        $this->markers = Marker::with('vehicle')->get();
     }
 
     public function addMarker()
     {
         $this->validate();
         
-        Marker::create([
+        // Debugging: Log input values
+        \Log::debug('Attempting to save:', [
             'x' => $this->tempX,
             'y' => $this->tempY,
-            'vehicle_code' => $this->selectedVehicle,
-            'message' => $this->message,
+            'vehicle' => $this->selectedVehicle,
+            'message' => $this->message
         ]);
-        
-        $this->reset(['message', 'selectedVehicle', 'showModal']);
-        $this->loadMarkers();
-    }
-
-    public function updateMarkerPosition($id, $x, $y)
-    {
-        Marker::findOrFail($id)->update([
-            'x' => max(0, min($x, 1200)),
-            'y' => max(0, min($y, 800))
-        ]);
-        
-        $this->loadMarkers();
+    
+        try {
+            $marker = Marker::create([
+                'x' => $this->tempX,
+                'y' => $this->tempY,
+                'vehicle_code' => $this->selectedVehicle,
+                'message' => $this->message,
+            ]);
+    
+            // Force refresh markers
+            $this->markers = Marker::with('vehicle')->get()->toArray();
+            
+            // Debugging: Check new marker
+            \Log::debug('New marker created:', $marker->toArray());
+    
+        } catch (\Exception $e) {
+            \Log::error('Save failed: '.$e->getMessage());
+        }
     }
 
     public function deleteMarker($id)
     {
         Marker::findOrFail($id)->delete();
         $this->loadMarkers();
+    }
+
+    public function updatedTempX($value)
+    {
+        $this->tempX = (int)$value;
+    }
+
+    public function updatedTempY($value)
+    {
+        $this->tempY = (int)$value;
     }
 
     public function render()

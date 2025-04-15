@@ -9,13 +9,18 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('markers', function (Blueprint $table) {
             $table->id();
-            $table->string('vehicle_code');
+            $table->decimal('x', 10, 2); // Koordinat X
+            $table->decimal('y', 10, 2); // Koordinat Y
+            $table->string('vehicle_code', 10); // Sesuai dengan panjang kode di vehicles
             $table->text('message');
-            $table->integer('x');
-            $table->integer('y');
             $table->timestamps();
-        
-            $table->foreign('vehicle_code')->references('code')->on('vehicles');
+    
+            // Foreign key constraint
+            $table->foreign('vehicle_code')
+                ->references('code')
+                ->on('vehicles')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

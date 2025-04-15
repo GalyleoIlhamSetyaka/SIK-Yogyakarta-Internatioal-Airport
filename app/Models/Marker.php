@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Marker extends Model
 {
-    protected $fillable = ['vehicle_code', 'message', 'x', 'y'];
+    protected $fillable = ['x', 'y','vehicle_code', 'message'];
 
     public function vehicle()
     {

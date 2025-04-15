@@ -30,10 +30,29 @@
     padding: 1.5rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
-.marker-icon {
-    transition: transform 0.2s;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+.material-icons {
+    font-size: 2.5rem;
+    transition: all 0.2s ease;
 }
+
+.marker-icon {
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
 .marker-icon:hover {
     transform: scale(1.2);
+    cursor: pointer;
+}
+
+#mapImage {
+    max-height: calc(100vh - 4rem);
+}
+
+.marker-popup {
+    transition: all 0.2s ease;
+    z-index: 1000;
+}
+
+.marker-popup:hover {
+    transform: scale(1.1);
 }

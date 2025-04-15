@@ -54,4 +54,5 @@ Route::get('/map', function () {
 Route::get('/vehicles', function () {
     return view('vehicles.index');
 });
+
 ?>
