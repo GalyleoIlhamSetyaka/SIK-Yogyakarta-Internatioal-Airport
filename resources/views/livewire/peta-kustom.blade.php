@@ -1,46 +1,5 @@
-@livewireStyles
-@vite('resources/css/app.css')
-@section('navbar_home')
-  @guest
-    @if (Route::has('login'))
-      <li class="nav-item">
-        <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-      </li>
-    @endif
-    
-    @if (Route::has('register'))
-      <li class="nav-item">
-        <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-      </li>
-    @endif
-  @else
-
-    <li class="nav-item">
-      <a class="nav-link text-dark" href="{{ url('/home') }}">Home</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" href="home/profile">{{ __('Profile') }}</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link text-dark" href="/grid-map">{{ __('Grid Map') }}</a>
-    </li>
-
-    <li class="nav-item">
-      <a class="nav-link text-dark" href="{{ route('logout') }}"
-      onclick="event.preventDefault();
-      document.getElementById('logout-form').submit();">
-      {{ __('Logout') }}
-    </a>
-    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-      @csrf
-    </form>
-  </li>
-</div>
-</li>
-@endguest
-@endsection
 <div class="space-y-4">
-    <div class="relative w-full h-[600px] bg-cover bg-[url('{{ asset('images/peta_anda.png') }}')] border border-gray-300 cursor-crosshair"
+    <div class="relative w-full h-[600px] bg-cover bg-[url('{{ asset('img/index/gridmap.png') }}')] border border-gray-300 cursor-crosshair"
          wire:click.prevent="tambahMarker($event.offsetX, $event.offsetY)"
          id="map-container">
         @foreach ($markers as $marker)

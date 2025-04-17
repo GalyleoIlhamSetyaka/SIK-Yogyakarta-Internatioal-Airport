@@ -3,8 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GridMapController;
 use App\Livewire\MarkerMap;
-use App\Livewire\GridMapComponent;
-
+use App\Livewire\PetaKustom;
+use App\Http\Controllers\PetaKustomController; 
 
 
 /*
@@ -47,12 +47,14 @@ Route::resource('/home/admin', App\Http\Controllers\Auth\AdminController::class)
 
 Route::resource('/password/reset', App\Http\Controllers\Auth\ResetController::class);
 
-Route::get('/map', function () {
-    return view('marker-map');
-});
+Route::get('/gridmap', \App\Livewire\MarkerMap::class);
+
 
 Route::get('/vehicles', function () {
     return view('vehicles.index');
 });
+
+// routes/web.php
+Route::get('/peta-kustom', PetaKustom::class)->name('peta.index');
 
 ?>

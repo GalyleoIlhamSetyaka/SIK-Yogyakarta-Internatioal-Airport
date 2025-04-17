@@ -11,6 +11,10 @@
     height: calc(100vh - 4rem);
 }
 
+#map {
+    height: 100%;
+    width: 100%;
+}
 .image-grid {
     position: absolute;
     top: 0;
