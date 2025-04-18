@@ -17,7 +17,7 @@
     </div>
 
     <div class="p-4 border border-gray-300 rounded">
-        <h2 class="text-lg font-semibold mb-4">Form Tambah Marker</h2>
+        <h2 class="text-lg font-semibold mb-4">Form Tambahhh Marker</h2>
 
         @if ($showForm)
             <form wire:submit.prevent="simpanMarker" class="space-y-4">
@@ -49,14 +49,34 @@
     </div>
 
     @push('scripts')
-    <script>
-    document.addEventListener('livewire:initialized', () => {
-        const mapContainer = document.getElementById('map-container');
+        <script>
+        document.addEventListener('livewire:initialized', () => {
+            const mapContainer = document.getElementById('map-container');
+            const markerForm = document.querySelector('.p-4.border.border-gray-300.rounded'); // Select the form container
 
-        mapContainer.addEventListener('click', (event) => {
-            Livewire.dispatch('tambahMarker', event.offsetX, event.offsetY);
+            mapContainer.addEventListener('click', (event) => {
+                const x = event.offsetX;
+                const y = event.offsetY;
+
+                Livewire.dispatch('tambahMarker', { x: x, y: y });
+
+                // Remove any existing temp marker
+                const existingTempMarker = mapContainer.querySelector('.temp-marker');
+                if (existingTempMarker) {
+                    existingTempMarker.remove();
+                }
+
+                // Create and display the temp marker
+                const tempMarker = document.createElement('div');
+                tempMarker.classList.add('absolute', 'w-5', 'h-5', 'bg-green-500', 'rounded-full', 'transform', 'translate-x-[-50%]', 'translate-y-[-50%]', 'pointer-events-none', 'temp-marker');
+                tempMarker.style.left = `${x}px`;
+                tempMarker.style.top = `${y}px`;
+                mapContainer.appendChild(tempMarker);
+
+                // Show the form
+                markerForm.style.display = 'block';
+            });
         });
-    });
     </script>
     @endpush
 </div>

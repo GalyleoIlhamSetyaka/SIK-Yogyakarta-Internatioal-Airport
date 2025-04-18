@@ -67,7 +67,7 @@ class PetaKustom extends Component
 
     public function render()
     {
-        return view('livewire.marker-map')
+        return view('livewire.peta-kustom')
         ->layout('component.layouts.app');
     }
 }

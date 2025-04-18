@@ -3,60 +3,59 @@
 @tailwind components;
 @tailwind utilities;
 
-.map-container {
-    display: grid;
-    grid-template-columns: 1fr 300px;
-    gap: 1.5rem;
-    padding: 1.5rem;
-    height: calc(100vh - 4rem);
+body {
+    font-family: 'Nunito', sans-serif;
 }
 
-#map {
-    height: 100%;
-    width: 100%;
+#app {
+    min-height: 90vh;
 }
-.image-grid {
+
+#map-container {
+    width: 1500px;
+    height: 800px;
+    background-size: cover;
+    border: 1px solid #d1d5db; /* border-gray-300 */
+    cursor: crosshair;
+    background-image: url('img/index/gridmap.png');
+}
+
+#map-container1 {
+    position: relative;
+    width: 100%;
+    /* Make it responsive */
+    max-width: 1500px;
+    /* Maximum width */
+    height: 800px;
+    background-image: url('img/index/gridmap.png');
+    background-size: cover;
+    border: 1px solid #ccc;
+    cursor: crosshair;
+}
+
+.marker {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    border-radius: 50%;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+    /* Agar titik tengah marker sesuai dengan posisi klik */
+}
+/* Contoh Grid Overlay (Optional) */
+#grid-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background:
-        linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
-    background-size: 40px 40px;
     pointer-events: none;
-}
-
-.sidebar {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-.material-icons {
-    font-size: 2.5rem;
-    transition: all 0.2s ease;
-}
-
-.marker-icon {
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-}
-
-.marker-icon:hover {
-    transform: scale(1.2);
-    cursor: pointer;
-}
-
-#mapImage {
-    max-height: calc(100vh - 4rem);
-}
-
-.marker-popup {
-    transition: all 0.2s ease;
-    z-index: 1000;
-}
-
-.marker-popup:hover {
-    transform: scale(1.1);
+    /* Make sure it doesn't interfere with clicks */
+    /* You'll need to generate the grid with JavaScript or another method */
+    /* This is just a placeholder */
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+    background-size: 25px 25px;
+    /* Adjust grid spacing */
 }

@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GridMapController;
 use App\Livewire\MarkerMap;
 use App\Livewire\PetaKustom;
-use App\Http\Controllers\PetaKustomController; 
+use App\Http\Controllers\PetaController;
+use App\Models\Vehicle;
+use App\Models\Marker;
 
 
 /*
@@ -47,14 +49,23 @@ Route::resource('/home/admin', App\Http\Controllers\Auth\AdminController::class)
 
 Route::resource('/password/reset', App\Http\Controllers\Auth\ResetController::class);
 
-Route::get('/gridmap', \App\Livewire\MarkerMap::class);
 
+Route::get('/grid-map', MarkerMap::class)->name('grid.map');
 
 Route::get('/vehicles', function () {
     return view('vehicles.index');
 });
 
+Route::get('/peta', function () {
+    $vehicles = Vehicle::all();
+    $markers = Marker::with('vehicle')->get();
+    return view('peta', compact('vehicles', 'markers'));
+});
+
+Route::post('/peta/simpan', [PetaController::class, 'simpanMarker'])->name('peta.simpan');
+
 // routes/web.php
+Route::get('/peta-kustom1', PetaKustom::class)->name('peta.index');
 Route::get('/peta-kustom', PetaKustom::class)->name('peta.index');
 
 ?>
