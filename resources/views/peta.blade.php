@@ -1,55 +1,12 @@
 @extends('layouts.app')
 @vite(['resources/css/app.css', 'resources/js/app.js'])
-@section('navbar_home')
-  @guest
-    @if (Route::has('login'))
-      <li class="nav-item">
-        <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-      </li>
-    @endif
-
-    @if (Route::has('register'))
-      <li class="nav-item">
-        <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-      </li>
-    @endif
-  @else
-
-    @if($user->customClaims['admin'])
-        <li class="nav-item">
-        <a class="nav-link text-dark" href="/home/admin">{{ __('Admin') }}</a>
-        </li>
-    @endif
-
-    <li class="nav-item">
-      <a class="nav-link text-dark" href="/home/profile">{{ __('Profile') }}</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-link text-dark" href="/marker-map">{{ __('Grid Map') }}</a>
-    </li>
-
-    <li class="nav-item">
-      <a class="nav-link text-dark" href="{{ route('logout') }}"
-      onclick="event.preventDefault();
-      document.getElementById('logout-form').submit();">
-      {{ __('Logout') }}
-    </a>
-    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-      @csrf
-    </form>
-  </li>
-</div>
-</li>
-@endguest
-@endsection
 @section('content')
-<div class="bg-gray-100 py-8">
-    <div class="mx-auto max-w-[1800px] px-4">
+<div class="bg-white bg-blue-950">
+    <div class="mx-auto max-w-[1800px] px-4 bg-blue-950">
         <h1 class="text-2xl font-bold mb-4">GRIDMAP YOGYAKARTA INTERNATIONAL AIRPORT</h1>
 
         <!-- Flex Container -->
-        <div class="flex flex-col lg:flex-row gap-6">
+        <div class="flex flex-col lg:flex-row gap-6 bg-blue-950">
             <!-- Map Section -->
             <div class="w-full lg:w-2/3">
                 <div id="map-container1">

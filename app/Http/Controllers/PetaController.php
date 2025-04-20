@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class PetaController extends Controller
 {
+    
     public function simpanMarker(Request $request)
     {
         $validatedData = $request->validate([
@@ -28,4 +29,5 @@ class PetaController extends Controller
 
         return response()->json(['message' => 'Marker deleted']);
     }
+    
 }
