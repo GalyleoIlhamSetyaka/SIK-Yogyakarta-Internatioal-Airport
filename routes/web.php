@@ -63,9 +63,6 @@ Route::get('/peta', function () {
 });
 
 Route::post('/peta/simpan', [PetaController::class, 'simpanMarker'])->name('peta.simpan');
-
-// routes/web.php
-Route::get('/peta-kustom1', PetaKustom::class)->name('peta.index');
-Route::get('/peta-kustom', PetaKustom::class)->name('peta.index');
+Route::delete('/marker/{id}', [App\Http\Controllers\PetaController::class, 'destroy']);
 
 ?>

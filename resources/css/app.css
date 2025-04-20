@@ -18,44 +18,49 @@ body {
     border: 1px solid #d1d5db; /* border-gray-300 */
     cursor: crosshair;
     background-image: url('img/index/gridmap.png');
-}
-
+}/* Kontainer Map */
 #map-container1 {
     position: relative;
-    width: 100%;
-    /* Make it responsive */
-    max-width: 1500px;
-    /* Maximum width */
-    height: 800px;
     background-image: url('img/index/gridmap.png');
     background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1500 / 800;
+    max-width: 100%;
     border: 1px solid #ccc;
     cursor: crosshair;
 }
 
+/* Marker Style */
 .marker {
     position: absolute;
-    width: 20px;
-    height: 20px;
+    width: 40px;
+    height: 40px;
     background-color: red;
     border-radius: 50%;
     cursor: pointer;
     transform: translate(-50%, -50%);
-    /* Agar titik tengah marker sesuai dengan posisi klik */
 }
-/* Contoh Grid Overlay (Optional) */
-#grid-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
+
+.popup {
+    transition: opacity 0.3s ease;
+}
+/* Sidebar khusus (form input) */
+#sidebar-container {
     width: 100%;
-    height: 100%;
-    pointer-events: none;
-    /* Make sure it doesn't interfere with clicks */
-    /* You'll need to generate the grid with JavaScript or another method */
-    /* This is just a placeholder */
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.1) 1px, transparent 1px),
-                      linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
-    background-size: 25px 25px;
-    /* Adjust grid spacing */
+    max-width: 400px;
+}
+
+/* Responsive helper jika ingin tambahan (optional) */
+@media (max-width: 1024px) {
+    #map-container1 {
+        height: auto;
+        aspect-ratio: 1500 / 800;
+    }
+
+    #sidebar-container {
+        max-width: 100%;
+        margin-left: 0;
+    }
 }

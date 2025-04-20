@@ -20,4 +20,12 @@ class PetaController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Marker berhasil disimpan', 'marker' => $marker->load('vehicle')]);
     }
+
+    public function destroy($id)
+    {
+        $marker = Marker::findOrFail($id);
+        $marker->delete();
+
+        return response()->json(['message' => 'Marker deleted']);
+    }
 }
