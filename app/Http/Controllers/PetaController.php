@@ -3,11 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Marker;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 
 class PetaController extends Controller
 {
-    
+    // ✅ Menampilkan halaman peta
+    public function index()
+    {
+        // Jika ingin mengirim data marker ke view juga, kamu bisa load semua marker
+        $markers = Marker::with('vehicle')->get();
+        return view('peta', compact('vehicles', 'markers'));
+    }
+
     public function simpanMarker(Request $request)
     {
         $validatedData = $request->validate([

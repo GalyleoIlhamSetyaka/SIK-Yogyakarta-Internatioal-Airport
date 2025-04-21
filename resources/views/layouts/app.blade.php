@@ -20,66 +20,71 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </head>
 <body style="min-height:90vh;">
 @livewireScripts
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    SIK Yogyakarta International Airport 
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+        <nav class="bg-blue-500 p-4 sticky top-0 z-50">
+            <div class="container mx-auto flex justify-between items-center">
+                <div class="text-xl font-bold text-white ">
+                    <a href="/" class="hover:text-blue-500">Sistem Informasi Kendaraan Yogyakarta Internasional Airport</a>
+                </div>
+                <ul class="hidden md:flex space-x-4 text-white">
+                    @guest  
+                        @if (Route::has('login'))
+                            <li>
+                                <a href="{{ route('login') }}" class=" hover:text-blue-500">Login</a>
+                            </li>
+                        @endif
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav mr-auto">
+                        @if (Route::has('register'))
+                            <li>
+                                <a href="{{ route('register') }}" class=" hover:text-blue-500">Register</a>
+                            </li>
+                        @endif
+                    @else
+                        @php
+                            $user = Auth::user();
+                        @endphp
 
-                    </ul>
+                        @if(isset($user->customClaims['admin']) && $user->customClaims['admin'])
+                            <li>
+                                <a href="/home/admin" class=" hover:text-blue-500">Admin</a>
+                            </li>
+                        @endif
 
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ml-auto">
-                        <!-- Authentication Links -->
-                        @yield('navbar_welcome')
-                        @yield('navbar_home')
-                        {{-- @guest
-                            @if (Route::has('login'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>
-                            @endif
+                        <li>
+                            <a href="/home/profile" class=" hover:text-blue-500">Profile</a>
+                        </li>
 
-                        @else
-                        
-                          @if($user->customClaims['admin'])
-                              <li class="nav-item">
-                              <a class="nav-link text-dark" href="/home/admin">{{ __('Admin') }}</a>
-                              </li>
-                          @endif
-                          <li class="nav-item">
-                              <a class="nav-link text-dark" href="home/profile">{{ __('Profile') }}</a>
-                          </li>
+                        <li>
+                            <a href="/peta" class=" hover:text-blue-500">Grid Map</a>
+                        </li>
 
-                          <li class="nav-item">
-                            <a class="nav-link text-dark" href="{{ route('logout') }}"
-                               onclick="event.preventDefault();
-                                             document.getElementById('logout-form').submit();">
-                                {{ __('Logout') }}
+                        <li>
+                            <a href="{{ route('logout') }}"
+                            class="text-red-500 hover:text-red-700"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                Logout
                             </a>
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
                                 @csrf
                             </form>
-                          </li>
-                        @endguest --}}
-                    </ul>
-                </div>
+                        </li>
+                    @endguest
+                </ul>
+            </div>
+            <div class="md:hidden">
+                    <button class="text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
             </div>
         </nav>
-
         <main class="py-4">
 
         {{-- Ini untuk support halaman Blade biasa --}}
@@ -87,10 +92,19 @@
         </main>
     </div>
 
-    <footer id="sticky-footer" class="flex-shrink-0 py-4 text-dark-50">
-      <div class="container text-center">
-        <small>Made with ❤️ by <a href="https://www.youtube.com/channel/UCPj8ztcYe1D6SSuXPDpupeA" style="text-decoration: none;">Ilham Setyaka</a></small>
-      </div>
+    <footer class="bg-blue-500 py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div>
+                <img src="{{ asset('img/index/TAG.png') }}" alt="Logo Footer" class="h-10">
+            </div>
+            <div class="text-sm text-white text-align-center">
+                <p>Andalan, Temon</p>
+                <p>Kulon Progo, Yogyakarta</p>
+                <p>Indonesia - 56554</p>
+                <p>Telp: (0274) 6488072 | Fax: (0274) 4606001</p>
+                <p>cs172@ap1.co.id</p>
+            </div>
+        </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>

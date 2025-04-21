@@ -1,31 +1,63 @@
 @extends('layouts.app')
 @vite(['resources/css/app.css', 'resources/js/app.js'])
+@section('navbar_gridmap')
+    @guest
+        @if (Route::has('login'))
+            <li><a href="{{ route('login') }}" class="text-gray-700 hover:underline">Login</a></li>
+        @endif
+
+        @if (Route::has('register'))
+            <li><a href="{{ route('register') }}" class="text-gray-700 hover:underline">Register</a></li>
+        @endif
+    @else
+        @php $user = Auth::user(); @endphp
+
+        @if(isset($user->customClaims['admin']) && $user->customClaims['admin'])
+            <li><a href="/home/admin" class="text-gray-700 hover:underline">Admin</a></li>
+        @endif
+
+        <li><a href="/home/profile" class="text-gray-700 hover:underline">Profile</a></li>
+        <li><a href="/marker-map" class="text-gray-700 hover:underline">Grid Map</a></li>
+        <li>
+            <a href="{{ route('logout') }}" class="text-gray-700 hover:underline"
+               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                Logout
+            </a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+                @csrf
+            </form>
+        </li>
+    @endguest
+@endsection
 @section('content')
-<div class="bg-white bg-blue-950">
-    <div class="mx-auto max-w-[1800px] px-4 bg-blue-950">
-        <h1 class="text-2xl font-bold mb-4">GRIDMAP YOGYAKARTA INTERNATIONAL AIRPORT</h1>
+<div class="bg-white">
+    <div class="mx-auto max-w-[1800px] px-4">
+        <h1 class="text-2xl font-bold mb-4 ">GRIDMAP YOGYAKARTA INTERNATIONAL AIRPORT</h1>
 
         <!-- Flex Container -->
-        <div class="flex flex-col lg:flex-row gap-6 bg-blue-950">
+        <div class="flex flex-col lg:flex-row gap-6">
             <!-- Map Section -->
             <div class="w-full lg:w-2/3">
                 <div id="map-container1">
                     @foreach ($markers as $marker)
-                            <div class="marker"
-                                style="left: {{ $marker->koordinat_x }}px; top: {{ $marker->koordinat_y }}px;"
-                                data-id="{{ $marker->id }}"
-                                data-message="{{ $marker->message }}"
-                                data-vehicle="{{ $marker->vehicle->name ?? 'Tidak diketahui' }}">
+                        <div class="marker text-white flex items-center justify-center text-xs font-bold"
+                            style="left: {{ $marker->koordinat_x }}px; top: {{ $marker->koordinat_y }}px;"
+                            data-id="{{ $marker->id }}"
+                            data-message="{{ $marker->message }}"
+                            data-vehicle="{{ $marker->vehicle->name ?? 'Tidak diketahui' }}">
 
-                                <!-- Pop-up -->
-                                <div class="popup absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-white text-sm text-gray-800 border px-3 py-2 rounded shadow-lg z-50 w-52 hidden">
-                                    <div class="font-semibold mb-1">{{ $marker->vehicle->name ?? 'Tidak diketahui' }}</div>
-                                    <div class="text-xs mb-2">{{ $marker->message }}</div>
-                                    <button class="delete-marker bg-red-500 text-white text-xs px-2 py-1 rounded" data-id="{{ $marker->id }}">
-                                        Hapus
-                                    </button>
-                                </div>
-                            </div>                    
+                            <!-- Tampilkan kode kendaraan di dalam lingkaran -->
+                            {{ $marker->vehicle->code ?? '' }}
+
+                            <!-- Pop-up -->
+                            <div class="popup absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-white text-sm text-gray-800 border px-3 py-2 rounded shadow-lg z-50 w-52 hidden">
+                                <div class="font-semibold mb-1">{{ $marker->vehicle->name ?? 'Tidak diketahui' }}</div>
+                                <div class="text-xs mb-2">{{ $marker->message }}</div>
+                                <button class="delete-marker bg-red-500 text-white text-xs px-2 py-1 rounded" data-id="{{ $marker->id }}">
+                                    Hapus
+                                </button>
+                            </div>
+                        </div>
                     @endforeach
                 </div>
             </div>

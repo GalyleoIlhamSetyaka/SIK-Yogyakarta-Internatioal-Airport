@@ -23,7 +23,6 @@
     <script src="//unpkg.com/alpinejs" defer></script>
     <script src="{{ asset('livewire/livewire.js') }}" defer></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
 </head>
 <body style="min-height:90vh;">
 
