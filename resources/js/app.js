@@ -54,6 +54,9 @@ markerForm.addEventListener('submit', function(event) {
             if (data.success) {
                 console.log('Marker saved successfully!', data);
                 // Update UI (e.g., add marker without reload)
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
             } else {
                 console.error('Error saving marker:', data);
             }

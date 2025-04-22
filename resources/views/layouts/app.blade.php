@@ -1,4 +1,3 @@
-<!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
 @livewireStyles
@@ -9,6 +8,7 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" type="image/png" href="{{ asset('icon.png') }}">
 
     <title>Sistem Informasi Kendaraan</title>
 
@@ -17,11 +17,13 @@
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </head>
 <body style="min-height:90vh;">
@@ -91,21 +93,19 @@
         @yield('content')
         </main>
     </div>
-
-    <footer class="bg-blue-500 py-4">
-        <div class="container mx-auto px-4 flex justify-between items-center">
-            <div>
-                <img src="{{ asset('img/index/TAG.png') }}" alt="Logo Footer" class="h-10">
+    <footer class="bg-blue-500 py-8" id="footer">
+        <div class="container mx-auto px-4 flex justify-center items-center">
+            <div class="flex items-center mr-16">
+                <img src="{{ asset('img/index/TAG.png') }}" alt="Logo Footer" class="h-12 mr-6">
             </div>
-            <div class="text-sm text-white text-align-center">
-                <p>Andalan, Temon</p>
-                <p>Kulon Progo, Yogyakarta</p>
+            <div class="text-white text-left text-xl">
+                <p>Palihan, Temon</p>
+                <p>Kulon Progo, DI Yogyakarta</p>
                 <p>Indonesia - 56554</p>
                 <p>Telp: (0274) 6488072 | Fax: (0274) 4606001</p>
                 <p>cs172@ap1.co.id</p>
             </div>
         </div>
-    </footer>
+     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
-</html>
