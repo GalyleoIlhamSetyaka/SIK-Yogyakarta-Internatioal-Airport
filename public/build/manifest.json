@@ -1,0 +1,16 @@
+{
+  "resources/css/app.css": {
+    "file": "assets/app-05b851c6.css",
+    "isEntry": true,
+    "src": "resources/css/app.css"
+  },
+  "resources/css/img/index/gridmap.png": {
+    "file": "assets/gridmap-68425ab0.png",
+    "src": "resources/css/img/index/gridmap.png"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-6487cf82.js",
+    "isEntry": true,
+    "src": "resources/js/app.js"
+  }
+}
